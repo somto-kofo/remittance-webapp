@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Money Transfer Compare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
+        .loader { border-top-color: #4f46e5; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <main class="flex-grow">
+        <div class="bg-gradient-to-r from-indigo-50 to-blue-50 py-6 border-b border-gray-200">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+                <h1 class="text-2xl md:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
+                    Compare global transfers
+                </h1>
+                
+                <div class="flex justify-center items-center gap-2 sm:gap-4 mb-6 flex-wrap">
+                    <!-- Send Currency Dropdown -->
+                    <span class="text-lg sm:text-xl text-gray-600 font-medium">From</span>
+                    <div class="relative">
+                        <select id="sourceCurrency" class="appearance-none text-lg sm:text-xl font-bold text-indigo-700 bg-white border-2 border-indigo-200 rounded-xl pl-4 pr-10 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none cursor-pointer shadow-sm">
+                            <option value="GBP">🇬🇧 GBP</option>
+                            <option value="AUD" selected>🇦🇺 AUD</option>
+                            <option value="EUR">🇪🇺 EUR</option>
+                            <option value="USD">🇺🇸 USD</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-indigo-500">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Receive Currency Dropdown -->
+                    <span class="text-lg sm:text-xl text-gray-600 font-medium">To</span>
+                    <div class="relative">
+                        <select id="destCurrency" class="appearance-none text-lg sm:text-xl font-bold text-indigo-700 bg-white border-2 border-indigo-200 rounded-xl pl-4 pr-10 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none cursor-pointer shadow-sm">
+                            <option value="CNY" selected>🇨🇳 China (CNY)</option>
+                            <option value="INR">🇮🇳 India (INR)</option>
+                            <option value="NGN">🇳🇬 Nigeria (NGN)</option>
+                            <option value="GHS">🇬🇭 Ghana (GHS)</option>
+                            <option value="KES">🇰🇪 Kenya (KES)</option>
+                            <option value="PHP">🇵🇭 Philippines (PHP)</option>
+                            <option value="PKR">🇵🇰 Pakistan (PKR)</option>
+                            <option value="BDT">🇧🇩 Bangladesh (BDT)</option>
+                            <option value="BRL">🇧🇷 Brazil (BRL)</option>
+                            <option value="VND">🇻🇳 Vietnam (VND)</option>
+                            <option value="EGP">🇪🇬 Egypt (EGP)</option>
+                            <option value="NPR">🇳🇵 Nepal (NPR)</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-indigo-500">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-xl max-w-md mx-auto relative">
+                    <label for="sendAmount" class="block text-sm font-medium text-gray-700 text-left mb-1">You Send</label>
+                    <div class="relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span id="sendCurrencySymbol" class="text-gray-500 sm:text-lg font-semibold">A$</span>
+                        </div>
+                        <input
+                            type="number"
+                            name="sendAmount"
+                            id="sendAmount"
+                            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-9 pr-16 py-2 sm:text-lg border-gray-300 rounded-xl bg-gray-50 border outline-none transition-all"
+                            placeholder="1000"
+                            value="1000"
+                            min="1"
+                        />
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <div id="loadingSpinner" class="hidden w-5 h-5 border-2 border-gray-200 rounded-full loader mr-2"></div>
+                            <span id="sendCurrencyCode" class="text-gray-500 font-medium">AUD</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-3 text-left" id="statusText">Fetching live rates...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+            <div class="flex justify-between items-end mb-4">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900">Live Provider Quotes</h2>
+                <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Sorted by best payout</span>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="hidden md:grid md:grid-cols-6 gap-4 p-4 border-b border-gray-200 bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <div class="col-span-2">Provider</div>
+                    <div class="text-right">Nominal Rate</div>
+                    <div class="text-right">Transfer Fee</div>
+                    <div class="text-right text-indigo-700">Effective Rate</div>
+                    <div class="text-right font-bold text-gray-800" id="headerReceiveCol">You Receive (CNY)</div>
+                </div>
+
+                <div id="providerList" class="divide-y divide-gray-100">
+                    <!-- Provider rows injected here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const sendSymbols = { 'GBP': '£', 'AUD': 'A$', 'EUR': '€', 'USD': 'US$' };
+        const receiveSymbols = { 
+            'CNY': '¥', 'INR': '₹', 'NGN': '₦', 'GHS': 'GH₵', 
+            'KES': 'KSh', 'PHP': '₱', 'PKR': '₨', 'BDT': '৳', 
+            'BRL': 'R$', 'VND': '₫', 'EGP': 'E£', 'NPR': '₨' 
+        };
+        
+        const sendAmountInput = document.getElementById('sendAmount');
+        const sourceCurrencySelect = document.getElementById('sourceCurrency');
+        const destCurrencySelect = document.getElementById('destCurrency');
+        const providerListContainer = document.getElementById('providerList');
+        const statusText = document.getElementById('statusText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const headerReceiveCol = document.getElementById('headerReceiveCol');
+
+        let debounceTimer;
+
+        async function fetchProviders() {
+            const amount = parseFloat(sendAmountInput.value) || 0;
+            const source = sourceCurrencySelect.value;
+            const dest = destCurrencySelect.value;
+            
+            if (amount <= 0) return;
+
+            // UI Loading State
+            statusText.textContent = "Scraping live rates (takes ~5s)...";
+            loadingSpinner.classList.remove('hidden');
+            providerListContainer.style.opacity = '0.5';
+
+            try {
+                // Now includes &target parameter dynamically
+                const response = await fetch(`/api/compare?amount=${amount}&source=${source}&target=${dest}`);
+                const data = await response.json();
+                
+                if (!response.ok) throw new Error(data.error || "Failed to fetch data");
+                
+                renderProviders(data.platforms, amount, sendSymbols[source], receiveSymbols[dest] || dest, dest);
+                statusText.textContent = `Last updated: ${data.queryTime}`;
+            } catch (error) {
+                providerListContainer.innerHTML = `<div class="p-6 text-center text-red-500 font-medium">Error: ${error.message}</div>`;
+                statusText.textContent = "Update failed.";
+            } finally {
+                loadingSpinner.classList.add('hidden');
+                providerListContainer.style.opacity = '1';
+            }
+        }
+
+        function renderProviders(platforms, sendAmount, sendSym, recvSym, destCode) {
+            const validProviders = platforms.filter(p => !p.error).sort((a, b) => b.receive - a.receive);
+            const errorProviders = platforms.filter(p => p.error);
+
+            if (validProviders.length === 0 && errorProviders.length === 0) {
+                providerListContainer.innerHTML = `<div class="p-6 text-center text-gray-500">No data available.</div>`;
+                return;
+            }
+
+            const html = validProviders.map((provider, index) => {
+                const isTopPick = index === 0 && sendAmount > 0;
+                const highlightClass = isTopPick ? 'bg-indigo-50/30' : '';
+                
+                const formattedRate = provider.rate.toFixed(4);
+                const formattedFee = provider.fee.toFixed(2);
+                const formattedEffective = provider.effectiveRate.toFixed(4);
+                const formattedReceive = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(provider.receive);
+
+                return `
+                    <div class="p-3 sm:p-4 hover:bg-gray-50 transition-colors flex flex-col md:grid md:grid-cols-6 gap-2 md:gap-4 items-center relative ${highlightClass}">
+                        ${isTopPick ? `
+                            <div class="absolute top-0 left-0 bg-green-500 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 sm:py-1 rounded-br-lg shadow-sm z-10 flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clip-rule="evenodd" />
+                                </svg>
+                                Best Payout
+                            </div>
+                        ` : ''}
+
+                        <div class="col-span-2 flex items-center w-full md:w-auto mt-4 md:mt-0">
+                            <div class="flex-1">
+                                <div class="text-base sm:text-lg font-bold text-gray-900 pl-1 md:pl-0">${provider.name}</div>
+                                <div class="text-xs text-gray-500 pl-1 md:pl-0">${provider.method}</div>
+                            </div>
+                        </div>
+
+                        <div class="w-full md:w-auto grid grid-cols-2 sm:grid-cols-4 md:grid-cols-1 md:contents gap-2 md:gap-4 mt-2 md:mt-0 pt-2 md:pt-0 border-t border-gray-100 md:border-t-0">
+                            <div class="flex flex-col md:text-right">
+                                <span class="text-xs text-gray-500 md:hidden uppercase font-semibold tracking-wide">Quoted Rate</span>
+                                <span class="font-medium text-gray-900 text-sm md:text-base">${formattedRate}</span>
+                            </div>
+
+                            <div class="flex flex-col md:text-right">
+                                <span class="text-xs text-gray-500 md:hidden uppercase font-semibold tracking-wide">Fee</span>
+                                <span class="font-medium text-red-500 text-sm md:text-base">${sendSym}${formattedFee}</span>
+                            </div>
+
+                            <div class="flex flex-col md:text-right">
+                                <span class="text-xs text-indigo-500 md:hidden uppercase font-semibold tracking-wide">Effective Rate</span>
+                                <span class="font-bold text-indigo-600 text-sm md:text-base bg-indigo-50 md:bg-transparent px-2 py-1 rounded md:p-0 inline-block w-max md:w-auto ml-0 md:ml-auto">${formattedEffective}</span>
+                            </div>
+                            
+                            <div class="flex flex-col md:text-right col-span-2 sm:col-span-1 bg-gray-50 md:bg-transparent p-3 md:p-0 rounded-lg sm:rounded-none">
+                                <span class="text-xs text-gray-500 md:hidden mb-1 uppercase font-semibold tracking-wide">Recipient Gets</span>
+                                <span class="text-xl md:text-lg font-black text-gray-900 tracking-tight">${recvSym}${formattedReceive}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const errorHtml = errorProviders.map(provider => `
+                <div class="p-3 sm:p-4 bg-red-50/20 flex items-center justify-between opacity-70">
+                    <div class="font-bold text-gray-700">${provider.name}</div>
+                    <div class="text-sm text-red-500 text-right truncate max-w-[200px]" title="${provider.error}">Unavailable</div>
+                </div>
+            `).join('');
+
+            providerListContainer.innerHTML = html + errorHtml;
+        }
+
+        // Event Listeners
+        sendAmountInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(fetchProviders, 1000);
+        });
+
+        sourceCurrencySelect.addEventListener('change', (e) => {
+            document.getElementById('sendCurrencyCode').textContent = e.target.value;
+            document.getElementById('sendCurrencySymbol').textContent = sendSymbols[e.target.value];
+            fetchProviders();
+        });
+
+        destCurrencySelect.addEventListener('change', (e) => {
+            headerReceiveCol.textContent = `You Receive (${e.target.value})`;
+            fetchProviders();
+        });
+
+        // Initial load
+        fetchProviders();
+    </script>
+</body>
+</html>
