@@ -3,14 +3,14 @@
 Remittance Platform Comparison — Local Web Service
 ================================================
 
-Implements all query logic locally, issuing concurrent requests to 
+Implements all query logic locally, issuing concurrent requests to
 mid-market rate sources and remittance platforms to avoid cumulative delays.
 
 Usage:
   .venv/bin/python3 webapp.py                 # Default 127.0.0.1:5000
   .venv/bin/python3 webapp.py --port 8000     # Specify port
 
-Open http://127.0.0.1:5000/ in your browser.
+Open http://127.0.0.1:5000/ the your browser.
 """
 
 import argparse
@@ -47,6 +47,8 @@ SOURCE_META = {
     "USD": {"remitly": "USA", "panda": "USA",
             "lemfi_country": "United States", "worldremit_country": "US",
             "taptap_country": "US"},
+    "CAD": {"remitly": "CAN", "panda": "CAN", "lemfi_country": "Canada",
+            "worldremit_country": "CA", "taptap_country": "CA"}
 }
 
 TARGET_META = {
@@ -76,6 +78,14 @@ TARGET_META = {
             "worldremit_country": "NP", "worldremit_payout": "BNK"},
     "XOF": {"remitly": "BEN", "panda": "BEN", "lemfi_to": "XOF",
             "worldremit_country": "BJ", "worldremit_payout": "MOB"},
+    "RWF": {"remitly": "RWA", "panda": "RWA", "lemfi_to": "RWF",
+            "worldremit_country": "RW", "worldremit_payout": "MOB"},
+    "TZS": {"remitly": "TZA", "panda": "TZA", "lemfi_to": "TZS",
+            "worldremit_country": "TZ", "worldremit_payout": "MOB"},
+    "XAF": {"remitly": "CMR", "panda": "CMR", "lemfi_to": "XAF",
+            "worldremit_country": "CM", "worldremit_payout": "MOB"},
+    "UGX": {"remitly": "UGA", "panda": "UGA", "lemfi_to": "UGX",
+            "worldremit_country": "UG", "worldremit_payout": "MOB"}
 }
 
 MAX_RETRIES = 3
@@ -169,11 +179,12 @@ def http_post_with_retry(url, payload=None, headers=None, timeout=15):
 
 CHINAMONEY_API_URL = "https://www.chinamoney.com.cn/r/cms/www/chinamoney/data/fx/ccpr.json"
 
+
 def query_chinamoney_mid_rate(source, target):
     """Queries Bank of China mid-market rate (only supports CNY targets)."""
     if target != "CNY":
         return {"name": "Bank of China", "error": "Only supports CNY targets"}
-        
+   
     headers = {
         "User-Agent": BROWSER_UA,
         "Accept": "application/json, text/javascript, */*; q=0.01",
