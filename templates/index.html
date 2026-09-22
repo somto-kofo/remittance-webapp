@@ -30,6 +30,7 @@
                             <option value="AUD" selected>🇦🇺 AUD</option>
                             <option value="EUR">🇪🇺 EUR</option>
                             <option value="USD">🇺🇸 USD</option>
+                            <option value="CAD">🇨🇦 CAD</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-indigo-500">
                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -54,6 +55,10 @@
                             <option value="VND">🇻🇳 Vietnam (VND)</option>
                             <option value="EGP">🇪🇬 Egypt (EGP)</option>
                             <option value="NPR">🇳🇵 Nepal (NPR)</option>
+                            <option value="RWF">🇷🇼 Rwanda (RWF)</option>
+                            <option value="TZS">🇹🇿 Tanzania (TZS)</option>
+                            <option value="XAF">🇨🇲 Cameroon (XAF)</option>
+                            <option value="UGX">🇺🇬 Uganda (UGX)</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-indigo-500">
                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -73,7 +78,7 @@
                             type="number"
                             name="sendAmount"
                             id="sendAmount"
-                            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-9 pr-16 py-2 sm:text-lg border-gray-300 rounded-xl bg-gray-50 border outline-none transition-all"
+                            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-14 pr-16 py-2 sm:text-lg border-gray-300 rounded-xl bg-gray-50 border outline-none transition-all"
                             placeholder="1000"
                             value="1000"
                             min="1"
@@ -111,11 +116,12 @@
     </main>
 
     <script>
-        const sendSymbols = { 'GBP': '£', 'AUD': 'A$', 'EUR': '€', 'USD': 'US$' };
+        const sendSymbols = { 'GBP': '£', 'AUD': 'A$', 'EUR': '€', 'USD': 'US$', 'CAD': 'C$' };
         const receiveSymbols = { 
             'CNY': '¥', 'INR': '₹', 'NGN': '₦', 'GHS': 'GH₵', 
             'KES': 'KSh', 'PHP': '₱', 'PKR': '₨', 'BDT': '৳', 
-            'BRL': 'R$', 'VND': '₫', 'EGP': 'E£', 'NPR': '₨' 
+            'BRL': 'R$', 'VND': '₫', 'EGP': 'E£', 'NPR': '₨',
+            'RWF': 'FRw', 'TZS': 'TSh', 'XAF': 'FCFA', 'UGX': 'USh'
         };
         
         const sendAmountInput = document.getElementById('sendAmount');
